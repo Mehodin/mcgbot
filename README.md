@@ -1,5 +1,7 @@
 # MCG Bot
 
+![GitHub](https://img.shields.io/github/license/64/mcgbot.svg)
+
 ## Building
 
 Python 3.5 or above required.
