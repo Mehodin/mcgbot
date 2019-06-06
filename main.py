@@ -18,8 +18,12 @@ bot = commands.Bot(command_prefix="/")
 
 @bot.command()
 async def ping(ctx):
-    roles.sync_roles_db(teams_db, ctx.guild.roles)
+    #roles.sync_roles_db(teams_db, ctx.guild.roles)
     await ctx.send("pong")
+
+@bot.command()
+async def source(ctx):
+    await ctx.send("https://github.com/64/mcgbot")
 
 
 print("Running bot")
