@@ -14,7 +14,7 @@ if os.getenv("PRODUCTION") == "true":
 
 role_map = roles.get_role_map(production)
 
-bot = commands.Bot(command_prefix="+")
+bot = commands.Bot(command_prefix="/")
 
 @bot.command()
 async def ping(ctx):
