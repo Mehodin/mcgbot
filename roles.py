@@ -1,10 +1,11 @@
+import logging
 from tinydb import Query
 
 Team = Query()
+logger = logging.getLogger(__name__)
 
 def get_role_map(prod):
     if prod:
-        # TODO
         return {
                 "Team Captain": 585478468569923611,
                 "Moderator": 572950198243033088,
@@ -16,15 +17,43 @@ def get_role_map(prod):
         return {
                 "Team Captain": 585918031339847680,
                 "Moderator": 585918102009675776,
-                "TeamUpperSpacer": 58603750080865899,
+                "TeamUpperSpacer": 586037500808658991,
                 "TeamLowerSpacer": 586037540071538688,
         }
 
-def sync_roles_db(teams_db, roles):
-    meta_roles = get_role_map(True)
-    upper_spacer_position = [role.position for role in roles if role.id == meta_roles["TeamUpperSpacer"]][0]
-    lower_spacer_position = [role.position for role in roles if role.id == meta_roles["TeamLowerSpacer"]][0]
+def get_user_team(state, member):
+    for role in member.roles:
+        items = state.teams_db.search(Team.id == role.id)
+        if len(items) == 1:
+            return items[0]
+    return None
 
+def is_captain(state, team, member):
+    captains = [member.id for captain in team["captains"]]
+    return member.id in captains
+
+def sync_roles_db(state, guild):
+    roles = guild.roles
+    upper_spacer_position = [role.position for role in roles if role.id == state.role_map["TeamUpperSpacer"]][0]
+    lower_spacer_position = [role.position for role in roles if role.id == state.role_map["TeamLowerSpacer"]][0]
+
+    # Update team list
     for role in roles:
-        if role.position > lower_spacer_position and role.position < upper_spacer_position and role.name != "Team Captain":
-            teams_db.upsert({ "name": role.name, "color": str(role.color), "id": role.id }, Team.name == role.name)
+        if role.position <= lower_spacer_position:
+            continue
+        if role.position >= upper_spacer_position:
+            continue
+        if role.name == "Team Captain":
+            continue
+        state.teams_db.upsert({ "name": role.name, "color": str(role.color), "id": role.id, "captains": [] }, Team.name == role.name)
+
+    # Get all team captains
+    for member in guild.get_role(state.role_map["Team Captain"]).members:
+        team = get_user_team(state, member)
+        if team is None:
+            continue
+
+        # Add them as a captain on the team list
+        captains = team["captains"]
+        captains.append({ "id": member.id, "name": member.name })
+        state.teams_db.update({ "captains": captains }, Team.id == team["id"])

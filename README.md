@@ -1,6 +1,6 @@
 # MCG Bot
 
-[![Discord server](https://discordapp.com/api/guilds/336642139381301249/embed.png)](https://discord.gg/GMf3bF3) ![GitHub](https://img.shields.io/github/license/64/mcgbot.svg)
+[![Discord server](https://discordapp.com/api/guilds/572876188918349855/embed.png)](https://discord.gg/GMf3bF3) ![GitHub](https://img.shields.io/github/license/64/mcgbot.svg)
 
 ## Building
 
@@ -16,3 +16,7 @@ Create a file named `.env` in the project root:
 DISCORDTOKEN=yourdiscordtoken
 PRODUCTION=false
 ```
+
+---
+
+Special thanks to [Yuhanun Citgez](https://github.com/Yuhanun) for helping create the bot.
