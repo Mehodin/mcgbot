@@ -29,8 +29,18 @@ def get_user_team(state, member):
     return None
 
 def is_captain(state, team, member):
+    # Are they a captain according to the local DB?
     captains = [member.id for captain in team["captains"]]
-    return member.id in captains
+    is_local_captain = member.id in captains 
+    
+    # Are they a captain according to the roles on the discord server?
+    is_remote_captain = state.role_map["Team Captain"] in [role.id for role in member.roles]
+
+    if is_remote_captain and not is_local_captain:
+        # Need to update local copy
+        sync_roles_db(state, member.guild)
+
+    return is_remote_captain
 
 def sync_roles_db(state, guild):
     roles = guild.roles
