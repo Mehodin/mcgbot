@@ -1,8 +1,12 @@
-import tinydb, dotenv, os, logging
+import tinydb
+import dotenv
+import os
+import logging
 import roles
 
 dotenv.load_dotenv()
 db = tinydb.TinyDB("db.json")
+
 
 class State:
     def __init__(self):
